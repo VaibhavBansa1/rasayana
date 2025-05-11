@@ -1,0 +1,12 @@
+[
+    {
+        "relation": ["delegate_permission/common.handle_all_urls"],
+        "target": {
+            "namespace": "android_app",
+            "package_name": "com.vaibhav_bansal.rasayana",
+            "sha256_cert_fingerprints": [
+                "47:A9:B2:87:2A:28:51:21:93:D8:71:41:58:77:04:11:FB:29:75:C4:10:4F:DB:AD:0F:4D:6B:3A:B5:08:70:1A"
+            ]
+        }
+    }
+]

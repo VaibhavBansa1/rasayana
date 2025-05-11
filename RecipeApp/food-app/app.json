@@ -1,0 +1,115 @@
+{
+  "expo": {
+    "name": "Rasāyana",
+    "slug": "rasayana",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/images/wo_text.png",
+    "scheme": "rasayana",
+    "newArchEnabled": true,
+    "userInterfaceStyle": "automatic",
+    "splash": {
+      "image": "./assets/images/wo_text.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#f59e0b"
+    },
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.vaibhav-bansal.rasayana"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/images/wo_text_and_bg.png",
+        "backgroundColor": "#f59e0b"
+      },
+      "package": "com.vaibhav_bansal.rasayana",
+      "intentFilters": [
+        {
+          "action": "VIEW",
+          "autoVerify": true,
+          "data": [
+            {
+              "scheme": "https",
+              "host": "rasayana.expo.app",
+              "pathPrefix": "/recipeDetail"
+            }
+          ],
+          "category": [
+            "BROWSABLE",
+            "DEFAULT"
+          ]
+        }
+      ],
+      "googleServicesFile": "./google-services.json",
+      "permissions": [
+        "android.permission.RECORD_AUDIO",
+        "NOTIFICATIONS",
+        "android.permission.ACCESS_COARSE_LOCATION",
+        "android.permission.ACCESS_FINE_LOCATION"
+      ]
+    },
+    "web": {
+      "bundler": "metro",
+      "output": "static",
+      "favicon": "./assets/images/wo_text.png"
+    },
+    "plugins": [
+      [
+        "expo-speech-recognition",
+        {
+          "microphonePermission": "Allow Rasāyana to use the microphone.",
+          "speechRecognitionPermission": "Allow Rasāyana to use speech recognition.",
+          "androidSpeechServicePackages": ["com.google.android.googlequicksearchbox"]
+        }
+      ],
+      [
+        "expo-video",
+        {
+          "supportsBackgroundPlayback": true,
+          "supportsPictureInPicture": true
+        }
+      ],
+      "expo-router",
+      [
+        "expo-font",
+        {
+          "fonts": [
+            "./assets/fonts/SpaceMono-Regular.ttf"
+          ]
+        }
+      ],
+      [
+        "expo-notifications",
+        {
+          "icon": "./assets/images/wo_text_and_bg.png",
+          "color": "#f59e0b",
+          "sounds": ["./assets/audio/notification.wav"],
+          "mode": "development",
+          "channelId": "default",
+          "importance": "high",
+          "androidCollapsedTitle": "Rasāyana",
+          "androidShowBadge": true
+        }
+      ],
+      "expo-secure-store",
+      [
+        "expo-location",
+        {
+          "locationAlwaysAndWhenInUsePermission": "Allow Rasāyana to use your location."
+        }
+      ]
+    ],
+    "experiments": {
+      "typedRoutes": true
+    },
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "a12250c7-90b7-4de8-a4c4-c22117e9c47c"
+      }
+    },
+    "owner": "vaibhav_bansal"
+  }
+}

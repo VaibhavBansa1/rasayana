@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+{% load i18n %}
+{% load static %}
+<html lang="en" data-bs-theme="auto">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="description" content="">
+        <meta name="generator" content="Hugo 0.118.2">
+        <link rel="shortcut icon" href="{% static "favicon.png" %}" type="image/x-icon">
+        <title>
+            {% block head_title %}{% endblock %}
+        </title>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+              rel="stylesheet"
+              integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
+              crossorigin="anonymous">
+        <script>
+            // Detect if the browser is on a mobile device
+            function showMobileButton() {
+                const isMobile = /Android|iPhone|iPad|iPod|Opera Mini|IEMobile|WPDesktop/i.test(navigator.userAgent);
+                const mobileButton = document.getElementById('open-app-button');
+                if (isMobile) {
+                    mobileButton.style.display = 'block';
+                } else {
+                    mobileButton.style.display = 'none';
+                }
+            }
+            document.addEventListener('DOMContentLoaded', showMobileButton);
+        </script>
+        <style>
+            .bg-body-tertiary {
+                --bs-bg-opacity: 1;
+                background-color: #fb9c00 !important; /* Amber background */
+            }
+            
+            .btn-primary {
+                background-color: #fb9c00 !important; /* Amber shade */
+                border-color: #FFBF00; /* Amber border */
+                color: black; /* Text color */
+                transition: background-color 0.2s ease, border-color 0.2s ease; /* Smooth transitions */
+            }
+            
+            .btn-primary:hover {
+                background-color: #FFBF00 !important; /* Lighter amber for hover */
+                border-color: #FFA500 !important; /* Slightly darker amber */
+                color: black;
+            }
+            
+            .btn-primary:focus-visible {
+                {% comment %} outline: 3px solid #FFBF00; /* Amber focus ring */
+                outline-offset: 2px; /* Space between button and outline */
+                background-color: #FFBF00; /* Keep lighter amber */
+                border-color: #FFA500; /* Slightly darker amber */ {% endcomment %}
+                color: black;
+            }
+            
+            .btn-primary:active {
+                background-color: #FFA500 !important; /* Slightly darker amber */
+                border-color: #CC8400 !important; /* Even darker border */
+                color: black !important;
+                transform: scale(0.98); /* Add a pressed effect */
+            }  
+            .nav-pills .nav-link.active, .nav-pills .show>.nav-link {
+                color: black;
+                background-color: #fb9c00;
+            }          
+        </style>
+    </head>
+    <body class="min-vh-100 d-flex flex-shrink-0 flex-column">
+        <a class="visually-hidden-focusable" href="#content">{% translate "Skip to main content" %}</a>
+        <header>
+            <nav class="navbar navbar-expand-lg bg-body-tertiary">
+                <div class="container-fluid">
+                    <a class="navbar-brand" href="{% url 'profile' %}">Rasāyana</a>
+                    <button class="navbar-toggler"
+                            type="button"
+                            data-bs-toggle="collapse"
+                            data-bs-target="#navbarText"
+                            aria-controls="navbarText"
+                            aria-expanded="false"
+                            aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <div class="collapse navbar-collapse" id="navbarText">
+                        <ul role="navigation"
+                            aria-label="Project links"
+                            class="navbar-nav me-auto mb-2 mb-lg-0">
+                            <li class="nav-item">
+                                <button id="open-app-button" 
+                                        style="display: none;"
+                                        class="btn btn-warning" 
+                                        onclick="window.location.href='exp+rasayana://'">
+                                    Open App
+                                </button>
+
+                            </li>
+                            <li class="nav-item">
+                                <a class="btn" href="https://github.com/VaibhavBansa1/major-project">Repository</a>
+                            </li>
+                        </ul>
+                        <div class="d-flex flex-column flex-sm-row gap-2 col-lg-3 justify-content-lg-end text-nowrap">
+                            {% comment %} <form class="d-flex" method="post" action="{% url 'set_language' %}">
+                                {% csrf_token %}
+                                {% get_available_languages as LANGUAGES %}
+                                {% get_current_language as LANGUAGE_CODE %}
+                                <label for="language-dropdown" class="visually-hidden">{% translate "Select Language" %}</label>
+                                <select id="language-dropdown"
+                                        aria-label="{% translate 'Select Language' %}"
+                                        name="language"
+                                        onchange="this.form.submit()">
+                                    {% get_language_info_list for LANGUAGES as languages %}
+                                    {% for lang in languages %}
+                                        <option lang="{{ lang.code }}"
+                                                {% if lang.code == LANGUAGE_CODE %}selected{% endif %}
+                                                value="{{ lang.code }}">{{ lang.name_local }}</option>
+                                    {% endfor %}
+                                </select>
+                            </form> {% endcomment %}
+                            {% if user.is_authenticated %}
+                                {% url 'account_email' as email_url_ %}
+                                {% url 'socialaccount_connections' as socialaccount_url_ %}
+                                {% if email_url_ or socialaccount_url_ %}
+                                    <a href="{% url 'profile' %}"
+                                       class="btn btn-warning">Manage Account</a>
+                                {% endif %}
+                                <a href="{% url 'account_logout' %}" class="btn btn-dark">{% translate "Sign Out" %}</a>
+                            {% else %}
+                                <a href="{% url 'account_login' %}" class="btn btn-warning">{% translate "Sign In" %}</a>
+                                {% url 'account_signup' as signup_url_ %}
+                                {% if signup_url_ %}
+                                    <a href="{{ signup_url_ }}" class="btn btn-dark">{% translate "Sign Up" %}</a>
+                                {% endif %}
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </nav>
+        </header>
+        {% block body %}
+            {% block content %}
+            {% endblock content %}
+        {% endblock body %}
+        {% block extra_body %}
+        {% endblock extra_body %}
+        {% if not user.is_authenticated %}
+            <script src="https://accounts.google.com/gsi/client" async></script>
+            <div id="g_id_onload"
+                data-client_id="101532517210-rbvr72lroauebb8e14fivli3pn73gueo.apps.googleusercontent.com"
+                data-login_uri="{% url 'google_login_by_token' %}">
+            </div>
+        {% endif %}
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+                integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+                crossorigin="anonymous"></script>
+    </body>
+</html>

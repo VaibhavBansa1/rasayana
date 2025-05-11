@@ -1,0 +1,292 @@
+{% extends "base_manage_admin_notification.html" %}
+{% load allauth i18n %}
+{% load static %}
+
+{% block head_title %}
+    {% trans "Send Notifications" %}
+{% endblock %}
+
+{% block extra_css %}
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+<style>
+    .container {
+        max-width: 800px;
+        margin: 2rem auto;
+        padding: 0 1rem;
+    }
+    .card {
+        background: white;
+        border-radius: 1rem;
+        box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+        border: none;
+    }
+    .card-body {
+        padding: 2rem;
+    }
+    .form-control, .form-select {
+        border: 1px solid #e5e7eb;
+        border-radius: 0.5rem;
+        padding: 0.75rem;
+        transition: all 0.2s;
+    }
+    .form-control:focus, .form-select:focus {
+        border-color: #f59e0b;
+        box-shadow: 0 0 0 2px rgba(245, 158, 11, 0.1);
+    }
+    .btn-primary {
+        background-color: #f59e0b;
+        border: none;
+        padding: 0.75rem 1.5rem;
+        border-radius: 0.5rem;
+        font-weight: 500;
+        transition: all 0.2s;
+    }
+    .btn-primary:hover {
+        background-color: #d97706;
+    }
+    .notification-preview {
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
+        border-radius: 0.5rem;
+        padding: 1rem;
+        margin-top: 1rem;
+    }
+    .select2-container .select2-selection--multiple {
+        min-height: 100px;
+    }
+    .badge {
+        background: #f59e0b;
+        color: white;
+        padding: 0.25rem 0.75rem;
+        border-radius: 9999px;
+        font-size: 0.875rem;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+        <h1  class="mb-4 text-dark" style="border-bottom: 2px solid #fb9c00; padding-bottom: 10px;">{% trans "Send Notifications" %}</h1>
+        <span class="badge" id="selectedCount">0 selected</span>
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <div class="card">
+        <div class="card-body">
+            <form id="notificationForm" method="post">
+                {% csrf_token %}
+                
+                <div class="row g-4">
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">{% trans "Notification Type" %}</label>
+                            <select name="type" class="form-select">
+                                {% for type in notification_types %}
+                                    <option value="{{ type.value }}">{{ type.label }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">{% trans "Related Recipe" %}</label>
+                            <select name="recipe_id" class="form-select">
+                                <option value="">{% trans "None" %}</option>
+                                {% for recipe in recipes %}
+                                    <option value="{{ recipe.id }}">{{ recipe.title }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">{% trans "Title" %}</label>
+                    <input type="text" name="title" class="form-control" required>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">{% trans "Message" %}</label>
+                    <textarea name="message" class="form-control" rows="4" required></textarea>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">
+                        {% trans "Recipients" %}
+                    </label>
+                    <select name="user_ids[]" class="form-select select2" multiple>
+                        <option value="all" data-select2-id="all-users">{% trans "All Users" %}</option>
+                        {% for user in users %}
+                            <option value="{{ user.id }}">
+                                {{ user.username }} {% if user.email %}({{ user.email }}){% endif %}
+                            </option>
+                        {% endfor %}
+                    </select>
+                    <div class="form-text">{% trans "Select specific users or 'All Users' (required)" %}</div>
+                </div>
+
+                <div class="notification-preview d-none" id="notificationPreview">
+                    <h6 class="fw-semibold mb-2">{% trans "Preview" %}</h6>
+                    <div class="p-3 bg-white rounded border">
+                        <h6 id="previewTitle" class="fw-semibold mb-1"></h6>
+                        <p id="previewMessage" class="mb-0 text-muted"></p>
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-end gap-2 mt-4">
+                    <button type="button" class="btn btn-light" onclick="resetForm()">
+                        {% trans "Reset" %}
+                    </button>
+                    <button type="submit" class="btn btn-primary">
+                        {% trans "Send Notification" %}
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_body %}
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialize Select2
+    $('.select2').select2({
+        placeholder: "Select recipients",
+        allowClear: true,
+        theme: "classic",
+        templateResult: function(data) {
+            if (data.id === 'all') {
+                return $('<span class="fw-bold text-primary">All Users</span>');
+            }
+            return data.text;
+        }
+    }).on('select2:selecting', function(e) {
+        const selectedIds = $(this).val() || [];
+        // If selecting "All Users", clear other selections
+        if (e.params.args.data.id === 'all') {
+            $(this).val(['all']).trigger('change');
+        }
+        // If selecting other users, remove "All Users" option
+        else if (selectedIds.includes('all')) {
+            const newSelection = selectedIds.filter(id => id !== 'all').concat(e.params.args.data.id);
+            $(this).val(newSelection).trigger('change');
+        }
+    });
+
+    const form = document.getElementById('notificationForm');
+    const preview = document.getElementById('notificationPreview');
+    const selectedCount = document.getElementById('selectedCount');
+
+    // Update preview
+    function updatePreview() {
+        const title = form.querySelector('[name="title"]').value;
+        const message = form.querySelector('[name="message"]').value;
+        
+        if (title || message) {
+            preview.classList.remove('d-none');
+            document.getElementById('previewTitle').textContent = title;
+            document.getElementById('previewMessage').textContent = message;
+        } else {
+            preview.classList.add('d-none');
+        }
+    }
+
+    // Update selected count
+    function updateSelectedCount() {
+        const select = $('.select2');
+        const selected = select.select2('data');
+        const count = selected.length;
+        if (selected.some(item => item.id === 'all')) {
+            selectedCount.textContent = 'All users';
+        } else {
+            selectedCount.textContent = `${count} selected`;
+        }
+    }
+
+    // Form handling
+    form.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        const formData = new FormData(form);
+        const selectedUsers = $('.select2').val() || [];
+        
+        // Prepare data
+        const data = {
+            title: formData.get('title'),
+            message: formData.get('message'),
+            type: formData.get('type'),
+            user_ids: selectedUsers.includes('all') ? [] : selectedUsers,
+            all_users: selectedUsers.includes('all'),
+            recipe_id: formData.get('recipe_id')
+        };
+
+        try {
+            const response = await fetch('{% url "admin-notification" %}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': formData.get('csrfmiddlewaretoken')
+                },
+                body: JSON.stringify(data)
+            });
+
+            const result = await response.json();
+            
+            if (!response.ok) throw new Error(result.error);
+
+            // Show success toast
+            const toast = new bootstrap.Toast(document.createElement('div'));
+            toast._element.innerHTML = `
+                <div class="toast-body bg-success text-white">
+                    Notifications sent successfully!
+                </div>
+            `;
+            document.body.appendChild(toast._element);
+            toast.show();
+
+            // Reset form
+            form.reset();
+            $('.select2').val(null).trigger('change');
+            preview.classList.add('d-none');
+            updateSelectedCount();
+            
+        } catch (error) {
+            const toast = new bootstrap.Toast(document.createElement('div'));
+            toast._element.innerHTML = `
+                <div class="toast-body bg-danger text-white">
+                    Error: ${error.message}
+                </div>
+            `;
+            document.body.appendChild(toast._element);
+            toast.show();
+        }
+    });
+
+    // Event listeners
+    form.querySelector('[name="title"]').addEventListener('input', updatePreview);
+    form.querySelector('[name="message"]').addEventListener('input', updatePreview);
+    $('.select2').on('change', updateSelectedCount);
+
+    // Initialize
+    updateSelectedCount();
+});
+
+function resetForm() {
+    const form = document.getElementById('notificationForm');
+    form.reset();
+    $('.select2').val(null).trigger('change');
+    document.getElementById('notificationPreview').classList.add('d-none');
+    document.getElementById('selectedCount').textContent = '0 selected';
+}
+</script>
+{% endblock %}

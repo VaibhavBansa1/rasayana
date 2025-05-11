@@ -1,0 +1,109 @@
+{% extends "base_manage_profile.html" %}
+{% load allauth i18n static %}
+
+{% block head_title %}
+    Profile
+{% endblock %}
+
+{% block content %}
+    <div class="container py-5">
+        <h1 class="text-center mb-4">{% trans "Profile" %}</h1>
+        <script>
+            // Detect if the browser is on a mobile device
+            function showMobileButton() {
+                const isMobile = /Android|iPhone|iPad|iPod|Opera Mini|IEMobile|WPDesktop/i.test(navigator.userAgent);
+                const mobileButton = document.getElementById('ContinueToApp');
+                if (isMobile) {
+                    mobileButton.style.display = 'block';
+                } else {
+                    mobileButton.style.display = 'none';
+                }
+            }
+            document.addEventListener('DOMContentLoaded', showMobileButton);
+        </script>
+
+        <!-- Two Big Buttons (for opening the React Native web/app) -->
+        <div class="d-flex justify-content-center gap-3 mb-5">
+            <a 
+               href="https://rasayana.expo.app/login/?refresh_token={{ token }}"
+               class="btn btn-dark btn-lg">
+               {% trans "Continue Login to Web" %}
+            </a>
+            <a 
+               href="exp+rasayana://login/?refresh_token={{ token }}"
+               class="btn btn-primary btn-lg"
+               id="ContinueToApp"
+            >
+               {% trans "Continue Login to App" %}
+            </a>
+        </div>
+
+
+        <!-- User Information -->
+        {% element form form=form method="post" enctype="multipart/form-data" %}
+            {% slot body %}
+                {% csrf_token %}
+
+                {% element fields form=form %}{% endelement %}
+                <div class="form-group mt-3">
+                    <label for="profile_picture">{% trans "Profile Picture" %}</label>
+                    <img id="selected_image_preview" 
+                         src="{{user_profile_picture}}" 
+                         alt="{% trans 'Profile Picture Preview' %}" 
+                         class="img-thumbnail" 
+                         style="max-width: 300px; max-height: 300px;">
+                </div>
+            {% endslot %}
+            {% slot actions %}
+                {% element button type="submit" class="btn btn-success btn-lg" %}
+                    {% trans "Save Changes" %}
+                {% endelement %}
+            {% endslot %}
+        {% endelement %}
+    </div>
+
+    <script>
+        // Function to preview and crop the selected image
+        function previewImage(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                const img = new Image();
+                img.src = e.target.result;
+                img.onload = function () {
+                    const canvas = document.createElement('canvas');
+                    const ctx = canvas.getContext('2d');
+
+                    // Resize to 300x300 maintaining aspect ratio
+                    const size = Math.min(img.width, img.height);
+                    canvas.width = 300;
+                    canvas.height = 300;
+
+                    const sx = (img.width - size) / 2;
+                    const sy = (img.height - size) / 2;
+
+                    ctx.drawImage(img, sx, sy, size, size, 0, 0, 300, 300);
+
+                    // Set the canvas data as the preview image
+                    const croppedImage = canvas.toDataURL('image/jpeg');
+                    const preview = document.getElementById('selected_image_preview');
+                    preview.src = croppedImage;
+
+                    // Replace the input file's data with the cropped image data
+                    canvas.toBlob(function (blob) {
+                        const newFile = new File([blob], file.name, { type: 'image/jpeg' });
+                        const dataTransfer = new DataTransfer();
+                        dataTransfer.items.add(newFile);
+                        event.target.files = dataTransfer.files;
+                    });
+                };
+            };
+            reader.readAsDataURL(file);
+        }
+
+        // Attach the previewImage function to the file input
+        document.querySelector('input[name="profile_picture"]').addEventListener('change', previewImage);
+    </script>
+{% endblock content %}

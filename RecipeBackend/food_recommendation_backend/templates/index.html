@@ -1,0 +1,19 @@
+{% extends "allauth/layouts/entrance.html" %}
+{% load static %}
+{% load allauth %}
+
+{% block head_title %}Rasāyana{% endblock %}
+<img src="{% static 'rasayana_logo.png' %}" alt="Rasāyana Logo" class="h-10 w-auto">
+                
+{% block content %}
+    <img src="{% static "rasayana_logo.png" %}" class="card-img-top mb-4" style="border-radius:100%" alt="...">
+    {% element h1 %}
+        <span class="text-amber-dark font-bold text-3xl">Welcome to Rasāyana</span>
+    {% endelement %}
+    <p class="mt-4 text-lg text-gray-600">
+        Welcome to the Recipe Search and Recommendation project. Explore a seamless authentication experience!
+    </p>
+    <div class="mt-6">
+        <a href="/explore" class="inline-block px-6 py-3 bg-amber-dark text-white rounded-md shadow-md hover:bg-amber-600">Explore More</a>
+    </div>
+{% endblock content %}

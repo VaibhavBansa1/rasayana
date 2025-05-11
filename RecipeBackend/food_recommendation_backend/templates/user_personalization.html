@@ -1,0 +1,214 @@
+{% extends "base_manage_user_personalization.html" %}
+{% load allauth i18n static %}
+
+{% block head_title %}
+    {% trans "Personalization Bot Settings" %}
+{% endblock %}
+
+{% block content %}
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet">
+<style>
+    /* Hide select elements until Select2 is ready to prevent FOUC */
+    .select2-multi {
+        visibility: hidden;
+    }
+    .select2-container--default .select2-selection--multiple {
+        min-height: 38px;
+        border: 1px solid #ced4da;
+        border-radius: 4px;
+        background-color: #fff;
+        padding: 5px;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+    }
+    .select2-selection__rendered {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 5px;
+        min-height: 38px;
+        align-items: center;
+    }
+    .select2-selection__choice {
+        background-color: #fb9c00 !important;
+        color: #fff !important;
+        border: none !important;
+        border-radius: 20px !important;
+        {% comment %} padding: 2px 10px 2px 5px !important; {% endcomment %}
+        margin: 2px !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        font-size: 0.9rem !important;
+    }
+    .select2-selection__choice__remove {
+        color: #fff !important;
+        font-weight: bold !important;
+        cursor: pointer !important;
+    }
+    .select2-selection__clear {
+        background-color: #dc3545 !important;
+        color: #fff !important;
+        border-radius: 20px !important;
+        padding: 2px 10px !important;
+        margin: 5px !important;
+        font-size: 0.9rem !important;
+        cursor: pointer !important;
+    }
+    .select2-dropdown {
+        background-color: #fff;
+        border: 1px solid #ced4da;
+        border-radius: 4px;
+        z-index: 1050;
+    }
+    .select2-search__field {
+        min-height: 30px;
+        border-radius: 4px;
+        border: 1px solid #ced4da;
+        padding: 5px;
+        background-color: #fff;
+    }
+    .card {
+        border: 1px solid #ced4da;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    .form-check {
+        margin-bottom: 5px;
+    }
+</style>
+<div class="container py-4">
+    <h1 class="mb-4 text-dark" style="border-bottom: 2px solid #fb9c00; padding-bottom: 10px;">
+        {% trans "Personalize Your Rasāyana Bot Experience" %}
+    </h1>
+
+    <form method="post" class="needs-validation" novalidate autocomplete="off">
+        {% csrf_token %}
+
+        <!-- Cuisine & Diet Preferences -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h3 class="mb-0">{% trans "Cuisine & Diet Preferences" %}</h3>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="id_preferred_cuisines" class="form-label">{% trans "Preferred Cuisines" %}</label>
+                        {{ form.preferred_cuisines }}
+                        <small class="form-text text-muted">{{ form.preferred_cuisines.help_text }}</small>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="id_dietary_restrictions" class="form-label">{% trans "Dietary Restrictions" %}</label>
+                        {{ form.dietary_restrictions }}
+                        <small class="form-text text-muted">{{ form.dietary_restrictions.help_text }}</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Ingredients & Tags -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h3 class="mb-0">{% trans "Ingredients & Tags" %}</h3>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="id_disliked_ingredients" class="form-label">{% trans "Disliked Ingredients" %}</label>
+                        {{ form.disliked_ingredients }}
+                        <small class="form-text text-muted">{{ form.disliked_ingredients.help_text }}</small>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="id_preferred_tags" class="form-label">{% trans "Preferred Tags" %}</label>
+                        {{ form.preferred_tags }}
+                        <small class="form-text text-muted">{{ form.preferred_tags.help_text }}</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Cooking Preferences -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h3 class="mb-0">{% trans "Cooking Preferences" %}</h3>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-4 mb-3">
+                        <label for="id_calorie_range_min" class="form-label">{% trans "Min Calories" %}</label>
+                        {{ form.calorie_range_min }}
+                        <small class="form-text text-muted">{{ form.calorie_range_min.help_text }}</small>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label for="id_calorie_range_max" class="form-label">{% trans "Max Calories" %}</label>
+                        {{ form.calorie_range_max }}
+                        <small class="form-text text-muted">{{ form.calorie_range_max.help_text }}</small>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label for="id_cook_time_max" class="form-label">{% trans "Max Cooking Time (mins)" %}</label>
+                        {{ form.cook_time_max }}
+                        <small class="form-text text-muted">{{ form.cook_time_max.help_text }}</small>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">{% trans "Difficulty Levels" %}</label>
+                    <div>
+                        {{ form.difficulty_levels }}
+                    </div>
+                    <small class="form-text text-muted">{{ form.difficulty_levels.help_text }}</small>
+                </div>
+            </div>
+        </div>
+
+        <div class="text-end">
+            <button type="submit" class="btn btn-primary">{% trans "Save Preferences" %}</button>
+        </div>
+    </form>
+</div>
+{% endblock %}
+
+{% block extra_body %}
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<script>
+$(document).ready(function() {
+    $('.select2-multi').select2({
+        width: '100%',
+        placeholder: function() {
+            return $(this).data('placeholder');
+        },
+        allowClear: true,
+        closeOnSelect: false,
+        language: {
+            noResults: function() {
+                return "No results found";
+            }
+        },
+        templateSelection: function(data, container) {
+            if (data.element && data.element.selected) {
+                $(container).addClass('select2-selection__choice');
+            }
+            return data.text;
+        }
+    }).on('select2:open', function() {
+        $(this).css('visibility', 'visible');
+    }).on('select2:select select2:unselect', function() {
+        // Ensure the container maintains its styling
+        $(this).next('.select2-container').find('.select2-selection--multiple').css({
+            'min-height': '38px',
+            'display': 'flex',
+            'flex-wrap': 'wrap',
+            'align-items': 'center'
+        });
+    });
+
+    // Customize the "Clear all" button text
+    $('.select2-container').each(function() {
+        const $container = $(this);
+        const $clearBtn = $container.find('.select2-selection__clear');
+        if ($clearBtn.length) {
+            $clearBtn.html('Clear all');
+        }
+    });
+});
+</script>
+{% endblock %}

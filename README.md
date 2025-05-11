@@ -1,4 +1,4 @@
-# Rasāyana (Recipe App)
+# [Rasāyana (Recipe App)](https://github.com/VaibhavBansa1/rasayana#:~:text=Ras%C4%81yana%20(Recipe%20App))
 
 ## Overview
 

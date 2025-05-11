@@ -5,8 +5,8 @@ cachetools==5.5.2
 certifi==2024.8.30
 cffi==1.17.1
 charset-normalizer==3.4.0
-cryptography==44.0.0
-Django==5.1.2
+cryptography==44.0.1
+django==5.1.9
 django-allauth==65.3.0
 django-cors-headers==4.6.0
 django-environ==0.11.2

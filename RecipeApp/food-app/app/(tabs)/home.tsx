@@ -9,6 +9,7 @@ import { Recipe } from '../../types/profile';
 import { useFocusEffect } from 'expo-router';
 import { responsive } from '../../utils/responsive';
 import * as Notifications from 'expo-notifications';
+import '../../global.css';
 
 interface RecipeSection {
     id: string;

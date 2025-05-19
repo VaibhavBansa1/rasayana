@@ -1,10 +1,11 @@
-import { View, Text, RefreshControl } from 'react-native';
+import { View, Text } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import { useLocalSearchParams } from 'expo-router';
 import { Recipe } from '../types/profile';
 import { apiClient } from '../utils/Auth-Request';
 import NewRecipes from '../components/new-recipe';
 import Toast from 'react-native-toast-message';
+import '../global.css';
 
 export default function AllRecipes() {
     const { type } = useLocalSearchParams();

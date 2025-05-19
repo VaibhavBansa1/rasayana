@@ -14,6 +14,7 @@ import {
     markAllNotificationsAsRead,
     deleteNotification
 } from '../../utils/notifications';
+import '../../global.css';
 
 // Configure notification behavior
 Notifications.setNotificationHandler({

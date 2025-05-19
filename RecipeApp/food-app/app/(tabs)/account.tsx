@@ -12,6 +12,7 @@ import Loading from "../../components/loading";
 import NetInfo from '@react-native-community/netinfo';
 import { responsive } from '../../utils/responsive';
 import DeveloperInfoModal from '../../components/DeveloperInfoModal';
+import '../../global.css';
 
 interface UserInfo {
     username: string;

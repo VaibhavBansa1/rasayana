@@ -12,6 +12,7 @@ import { debounce } from '../utils/debounce';
 import axios from 'axios';
 import { LocationMap } from '../components/LocationMap';
 import { responsive } from '../utils/responsive';
+import '../global.css';
 
 declare global {
     interface Window {

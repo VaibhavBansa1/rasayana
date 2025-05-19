@@ -6,6 +6,7 @@ import { format } from 'date-fns';
 import { Ionicons } from '@expo/vector-icons';
 import { router, useFocusEffect } from 'expo-router';
 import Toast from 'react-native-toast-message';
+import '../../global.css';
 
 export default function Orders() {
     const [orders, setOrders] = useState<OrderHistory[]>([]);

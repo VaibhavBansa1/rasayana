@@ -38,9 +38,9 @@ cp google-services.example.json google-services.json  # Configure your Google se
 ### Backend Setup
 
 ```bash
-cd RecipeBackend
-python -m venv .venv
-source .venv/bin/activate  # Linux/Mac
+cd RecipeBackend/food_recommendation_backend/
+python3 -m venv .venv # Linux/Mac python -m venv .venv  # Windows
+source .venv/bin/activate  # Linux/Mac .venv/Scripts/activate  # Windows
 pip install -r requirements.txt
 cp .env.example .env  # Configure your environment variables
 ```

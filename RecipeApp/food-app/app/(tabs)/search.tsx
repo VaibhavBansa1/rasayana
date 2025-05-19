@@ -12,6 +12,7 @@ import FilterModal from '../../components/filter-modal';
 import { Filters, ActiveFilters } from '../../types/filters';
 import Animated, { FadeIn } from 'react-native-reanimated';
 import { ExpoSpeechRecognitionModule, useSpeechRecognitionEvent } from 'expo-speech-recognition';
+import '../../global.css';
 
 export default function Search() {
     const [searchText, setSearchText] = useState('');

@@ -7,6 +7,7 @@ import { heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { responsive } from '../utils/responsive';
 import Animated, { useSharedValue, withSpring } from 'react-native-reanimated';
 import { useFocusEffect, useRouter } from "expo-router";
+import '../global.css';
 
 const Index = () => {
     const ring1padding = useSharedValue(0);

@@ -1,3 +1,4 @@
+import '../../global.css';
 import { View, Text, TouchableOpacity, Modal, StyleSheet, Platform } from 'react-native';
 import React, { useState, useCallback, useEffect } from 'react';
 import { Bubble, GiftedChat, IMessage, Send } from 'react-native-gifted-chat';

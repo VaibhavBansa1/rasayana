@@ -65,7 +65,7 @@ export default function LoginScreen() {
             }
             if (!refresh_token) {
                 setLoading(false);
-                Alert.alert("Error", "No refresh token found in the deep link.");
+                route.replace('/home');
                 return;
             }
             

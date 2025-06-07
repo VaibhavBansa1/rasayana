@@ -1,6 +1,8 @@
 # [Rasāyana (Recipe App)](https://github.com/VaibhavBansa1/rasayana#:~:text=Ras%C4%81yana%20(Recipe%20App))
 
 ## Overview
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2FVaibhavBansa1%2Frasayana.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2FVaibhavBansa1%2Frasayana?ref=badge_shield)
+
 
 A recipe recommendation app that helps users discover and share recipes.
 
@@ -118,3 +120,7 @@ This will start the Expo development server and show a QR code. You can:
 
 3. For Android Emulator:
    - Use `http://10.0.2.2:8000` as BASE_URL instead of localhost
+
+
+## License
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2FVaibhavBansa1%2Frasayana.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2FVaibhavBansa1%2Frasayana?ref=badge_large)
